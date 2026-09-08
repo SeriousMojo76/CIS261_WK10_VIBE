@@ -56,7 +56,7 @@ def get_nonempty_input(prompt):
 def add_student():
 	"""Collect exactly three test scores and return a Student object."""
 	print("\nAdd New Student")
-	name = get_nonempty_input("Enter student name: ")
+	name = get_nonempty_input("\nEnter student name: ")
 	student_id = get_nonempty_input("Enter student ID: ")
 	test_scores = [get_score(score_number) for score_number in range(1, 4)]
 	average = calculate_average(test_scores)
@@ -82,11 +82,14 @@ def display_students(students):
 		f"{'Name':<20} {'ID':<12} {'Test 1':>7} {'Test 2':>7} "
 		f"{'Test 3':>7} {'Average':>8} {'Grade':>5}"
 	)
-	print("\nAll Student Records")
+	print("\nALL STUDENT RECORDS")
+	print()
 	print(header)
 	print("-" * len(header))
 	for student in students:
 		print(format_student_row(student))
+	print()
+	print(f"Total Students: {len(students)}")
 
 
 def search_students(students):
@@ -95,13 +98,13 @@ def search_students(students):
 		print("No student records are available.")
 		return
 
-	search_name = get_nonempty_input("Enter the name to search for: ").casefold()
+	search_name = get_nonempty_input("\nEnter the name to search for: ").casefold()
 	matches = [student for student in students if search_name in student.name.casefold()]
 	if not matches:
-		print(f'No students found matching "{search_name}".')
+		print(f'\nNo students found matching "{search_name}".')
 		return
 
-	print(f'\nStudents matching "{search_name}":')
+	print(f'\nStudents matching "{search_name}":\n')
 	header = (
 		f"{'Name':<20} {'ID':<12} {'Test 1':>7} {'Test 2':>7} "
 		f"{'Test 3':>7} {'Average':>8} {'Grade':>5}"
@@ -135,7 +138,9 @@ def display_statistics(students):
 	print(f"Lowest Average: {lowest.average:.2f} ({lowest.name})")
 	print("\nGrade Distribution")
 	for grade, count in grade_counts.items():
-		print(f"{grade}: {count}")
+		if count > 0:
+			student_label = "student" if count == 1 else "students"
+			print(f"{grade}: {count} {student_label}")
 
 
 def load_students(filename="student_grades.txt"):
@@ -181,7 +186,7 @@ def save_students(students, filename="student_grades.txt"):
 	except OSError as error:
 		print(f"Unable to save student records: {error}")
 		return False
-	print(f"Saved {len(students)} student record(s) to {filename}.")
+	print(f"\nSaved {len(students)} student record(s) to {filename}.")
 	return True
 
 
@@ -199,7 +204,6 @@ def display_menu():
     print(separator)
     return input("Select an option (1-5) or type ESC to exit: ").strip()
 
-
 def main():
 	separator = "=" * 50
 	print(separator)
@@ -210,7 +214,7 @@ def main():
 		choice = display_menu()
 		if choice == "1":
 			students.append(add_student())
-			print("Student added successfully.")
+			print("\nStudent added successfully.")
 		elif choice == "2":
 			display_students(students)
 		elif choice == "3":
@@ -219,7 +223,7 @@ def main():
 			display_statistics(students)
 		elif choice == "5" or choice.casefold() == "esc" or choice == "\x1b":
 			save_students(students)
-			print("Goodbye.")
+			print("\nThank you for using Student Grade Calculator!")
 			break
 		else:
 			print("Invalid option. Please choose 1-5 or type ESC to save and exit.")
